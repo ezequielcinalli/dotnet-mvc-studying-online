@@ -1,10 +1,34 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StudyingOnline.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+if (builder.Environment.IsDevelopment())
+{
+
+    builder.Services.AddDbContext<StudyingOnlineContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("StudyingOnlineContext")));
+}
+else
+{
+    builder.Services.AddDbContext<StudyingOnlineContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("StudyingOnlineContext")));
+}
 
 // Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedData.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
