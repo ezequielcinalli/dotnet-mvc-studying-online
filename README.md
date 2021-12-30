@@ -1,5 +1,7 @@
 # Studying online
 
+![screenshot](StudyingOnline/wwwroot/images/screenshot.png)
+
 The project is a recreation of [TPE-WEB2 (php)](https://github.com/gabrielballone/TPE-WEB2) using the ASP.NET core.
 
 The following technologies are used:
