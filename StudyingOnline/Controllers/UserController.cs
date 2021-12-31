@@ -1,6 +1,9 @@
 #nullable disable
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StudyingOnline.Helpers;
 using StudyingOnline.Models;
 
 namespace StudyingOnline.Controllers;
@@ -11,6 +14,11 @@ public class UserController : Controller
     public UserController(StudyingOnlineContext context)
     {
         _context = context;
+    }
+
+    public IActionResult Denied()
+    {
+        return View();
     }
 
     // GET: User
@@ -56,9 +64,10 @@ public class UserController : Controller
     {
         if (ModelState.IsValid)
         {
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             _context.Add(user);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(HomeController.Index));
         }
         return View(user);
     }
@@ -72,20 +81,40 @@ public class UserController : Controller
     // POST: User/Login
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login([Bind("Id,Email,Password,Name,Phone,IsAdmin")] User user)
+    public async Task<IActionResult> Login([Bind("Email,Password")] Login user)
     {
         if (ModelState.IsValid)
         {
             var userDB = await _context.User
                .FirstOrDefaultAsync(m => m.Email == user.Email);
-            if (user == null)
+            if (userDB == null)
             {
-                return NotFound();
+                ModelState.AddModelError("", "The credentials are not valid!");
+                return View(user);
             }
 
             if (BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password))
             {
-                //TODO: auth
+                var authClaims = new List<Claim>(){
+                    new Claim(CustomClaimTypes.Id, userDB.Id.ToString()),
+                    new Claim(CustomClaimTypes.Email, userDB.Email),
+                    new Claim(CustomClaimTypes.Name, userDB.Name),
+                    new Claim(CustomClaimTypes.Phone, userDB.Phone),
+                    new Claim(CustomClaimTypes.Admin, userDB.IsAdmin.ToString()),
+                };
+
+                var authIdentity = new ClaimsIdentity(authClaims, "CookieAuth");
+
+                var userPrincipal = new ClaimsPrincipal(new[] { authIdentity });
+
+                await HttpContext.SignInAsync(userPrincipal);
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "The credentials are not valid!");
+                return View(user);
             }
         }
         return View(user);

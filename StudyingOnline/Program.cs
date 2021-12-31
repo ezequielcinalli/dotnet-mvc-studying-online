@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using StudyingOnline.Helpers;
 using StudyingOnline.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Add services to the container.
 if (builder.Environment.IsDevelopment())
 {
 
@@ -17,9 +18,22 @@ else
         options.UseSqlServer(builder.Configuration.GetConnectionString("StudyingOnlineContext")));
 }
 
-// Add services to the container.
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllersWithViews();
+
+//authentication with cookies
+builder.Services.AddAuthentication("CookieAuth")
+.AddCookie("CookieAuth", config =>
+{
+    config.Cookie.Name = "Auth.Cookie";
+    config.LoginPath = "/User/Login";
+    config.AccessDeniedPath = "/User/Denied";
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdmin", policy => policy.RequireClaim(CustomClaimTypes.Admin, "1"));
+});
 
 var app = builder.Build();
 

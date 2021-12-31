@@ -9,3 +9,10 @@ The following technologies are used:
 
 - [Entity framework](https://docs.microsoft.com/en-us/ef/core/) for data layer management
 
+
+## User accounts
+
+For development purposes 2 user accounts are provided with the seed data:
+
+- Email = "admin@admin.com", Password = "123",
+- Email = "no-admin@admin.com", Password = "123",
