@@ -140,9 +140,14 @@ namespace StudyingOnline.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        if (_userManager.Users.Count() == 1)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                        }
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }
+
                 }
                 foreach (var error in result.Errors)
                 {

@@ -25,16 +25,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<StudyingOnlineContext>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllersWithViews();
-
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("RequireAdmin", policy => policy.RequireClaim(CustomClaimTypes.Admin, "1"));
-});
 
 var app = builder.Build();
 

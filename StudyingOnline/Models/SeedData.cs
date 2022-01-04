@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace StudyingOnline.Models;
@@ -154,29 +155,6 @@ public static class SeedData
                 context.SaveChanges();
             }
 
-            // Look for any users.
-            // if (!context.User.Any())
-            // {
-            //     context.User.AddRange(
-            //     new User
-            //     {
-            //         Email = "admin@admin.com",
-            //         Password = "$2a$11$YxCBF1F6Ttzq35acc6cPVuZvvYeQzJbJ0RXm4zRT5/eczh00Ylila",
-            //         Name = "admin",
-            //         Phone = "1234567890",
-            //         IsAdmin = true
-            //     },
-            //     new User
-            //     {
-            //         Email = "no-admin@admin.com",
-            //         Password = "$2a$11$YxCBF1F6Ttzq35acc6cPVuZvvYeQzJbJ0RXm4zRT5/eczh00Ylila",
-            //         Name = "no-admin",
-            //         Phone = "123456789",
-            //         IsAdmin = false
-            //     }
-            //     );
-            //     context.SaveChanges();
-            // }
         }
     }
 }

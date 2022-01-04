@@ -15,4 +15,16 @@ public class StudyingOnlineContext : IdentityDbContext<IdentityUser>
     public DbSet<Category> Category { get; set; }
     public DbSet<Course> Course { get; set; }
     public DbSet<Comment> Comment { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole
+            {
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            }
+        );
+        base.OnModelCreating(modelBuilder);
+    }
 }
