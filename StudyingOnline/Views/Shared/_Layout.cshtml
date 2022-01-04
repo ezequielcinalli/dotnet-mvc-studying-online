@@ -34,10 +34,7 @@
                             <a class="nav-link text-white" asp-controller="Courses" asp-action="Index">Courses</a>
                         </li>
                     </ul>
-                    <div>
-                        <a asp-controller="User" asp-action="Register" class="btn btn-primary mx-2">Register</a>
-                        <a asp-controller="User" asp-action="Login" class="btn btn-primary">Log in</a>
-                    </div>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StudyingOnline.Helpers;
 using StudyingOnline.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,18 +18,18 @@ else
     builder.Services.AddDbContext<StudyingOnlineContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("StudyingOnlineContext")));
 }
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<StudyingOnlineContext>();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllersWithViews();
 
-//authentication with cookies
-builder.Services.AddAuthentication("CookieAuth")
-.AddCookie("CookieAuth", config =>
-{
-    config.Cookie.Name = "Auth.Cookie";
-    config.LoginPath = "/User/Login";
-    config.AccessDeniedPath = "/User/Denied";
-});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -56,11 +57,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

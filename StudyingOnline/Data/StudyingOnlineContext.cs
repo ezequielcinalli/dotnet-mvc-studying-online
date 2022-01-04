@@ -1,9 +1,11 @@
 #nullable disable
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudyingOnline.Models;
 
-public class StudyingOnlineContext : DbContext
+public class StudyingOnlineContext : IdentityDbContext<IdentityUser>
 {
     public StudyingOnlineContext(DbContextOptions<StudyingOnlineContext> options)
         : base(options)
@@ -12,6 +14,5 @@ public class StudyingOnlineContext : DbContext
 
     public DbSet<Category> Category { get; set; }
     public DbSet<Course> Course { get; set; }
-    public DbSet<User> User { get; set; }
     public DbSet<Comment> Comment { get; set; }
 }
