@@ -25,6 +25,7 @@ public class Course
     public string? Image { get; set; }
 
     [Required]
+    [Display(Name = "Category")]
     [Range(0, int.MaxValue)]
     public int CategoryId { get; set; }
 
